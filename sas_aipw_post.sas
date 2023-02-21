@@ -1,14 +1,7 @@
-libname data "Z:\Desktop";
-
-PROC import out=df
-datafile="Z:\Users\timf\Desktop\temp.csv"
-DBMS=CSV;
-GETNAMES=yes;
-Datarow=2;
-run;
+*Load sim_data_actg5202_aipw.csv
 
 data df2;
- set df;
+ setSdadf df;
  IF trt='ABC/3TC' THEN trt_num=1;
  	ELSE trt_num=0;
 Run;

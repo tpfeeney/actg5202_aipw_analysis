@@ -18,9 +18,9 @@ df<-read.csv("/Users/timf/Desktop/temp.csv")
 head(df)
 ```
 
-### Load simulated data
+### Make simulated data
 
-```{r}
+```{r, eval=FALSE}
 set.seed(1234)
 n<-1000 #same size as dataset we are working with
 
@@ -42,6 +42,7 @@ cd4<-6.67*(trt=="ABC/3TC")+26.14*sex+57.75*logrna0+1.05*basecd4+(-19.72)*agegrp+
 
 df<-data.frame(cd4, trt, sex, logrna0, basecd4, agegrp)
 head(df)
+write_csv(df, "sim_data_actg5202_aipw.csv") #output dataset for use by SAS
 ```
 
 ### ITT analysis
