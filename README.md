@@ -47,6 +47,7 @@ code for Better Analysis of RCTs (publicaation pending)
 | ---------------------------------------------------------------- | ------ | ------- |
 | \-0.025 (-0.065, 0.016)                                          | 0.0205 | 0.081   |
 | \-0.020 (-0.019, 0.061)                                          | 0.0203 | 0.080   |
+
 ABC/3TC=Abacavir-Lamivudine. TDF/FTC=Tenofovir DF-Emtricitabine.  ITT=Intent-to-treat. AIPW= augmented inverse probability weighting. RD=risk difference. SE=standard error. CID=confidence interval difference=upper confidence limit-lower confidence limit. Adjustment variables=categorized age, sex, baseline log10 RNA in copies/mL,  and baseline CD4 counts/mm^3. AIPW confidence intervals from bootstrapped standard errors with 10,000 samples.
 
 
@@ -57,7 +58,7 @@ $$
 A I P W=n^{-1} \sum_{i=1}^n \frac{X_i Y_i}{\pi\left(X_i ; \hat{\alpha}\right)}-\left(\frac{X_i}{\pi\left(X_i ; \hat{\alpha}\right)}-1\right) m\left(X_i ; \hat{\beta}\right)
 $$
 
-Is the AIPW estimator, where X_i=exposure for each person i, Y_i= the outcome of interest for person i, n=total number of participants
+Is the AIPW estimator, where $X_i$=exposure for each person $i$, $Y_i$= the outcome of interest for person $i$, n=total number of participants
 
 Step 1: Estimate the probability of treatment given covariates for each person, $\pi\left(X_i ; \hat{\alpha}\right)$.
 However, in our case we are evaluating an RCT, so the predicted probability of treatment (in this case of receiving 'ABC/3TC') for each person is the same and empirically estimate to be $0.486$, slightly off from the expectation of $0.5$.
@@ -66,7 +67,7 @@ Step 2: Estimate the outcome using maximum likelihood, $m\left(X_i, \boldsymbol{
 
 $$
 \begin{array}{lll}
-\text { ID Gformula0 } & \text { GFormula1 } \\
+\text{ID}& \text {  Gformula0 } & \text { GFormula1 } \\
 1 & 0.9136610 & 0.8847934 \\
 2 & 0.9531515 & 0.9365710 \\
 3 & 0.9698576 & 0.9589350 \\
@@ -84,26 +85,28 @@ Step 3b: AIPW ${ }_0$ for individuals, $i$, who were actually unexposed this is 
 $$
 \begin{array}{cllll}
 \text { ID } & \text { outcome } & \text { treat/exp } & \text { aipw0 } & \text { aipw1 } \\
-1 & =1 & 1 & 0.932 & 1.10 \\
+1 & 1 & 1 & 0.932 & 1.10 \\
 2 & 1 & 0 & 1.06 & 0.909 \\
 1 & 0 & 1 & 0.932 & -0.960 \\
 2 & 0 & 0 & -0.883 & 0.909
 \end{array}
 $$
 
-Step 4: AIPW $=$ mean( $\left(A^{\prime P W_1}\right.$ )-mean(AIPW ${ }^0$ )
+Step 4: AIPW $=$ mean( $\left(AIPW_1\right.$ )-mean(AIPW_0$ )
 
-Step 5: Calculate AIPW= mean(AIPW 1 )-mean(AIPW $\left.{ }^0\right) 1000$ or more times via bootstrap and calculate the standard error (SE) by estimating the standard deviation of the bootstrapped samples. Use this SE to calculate \% confidence intervals: AIPW+/z*sqrt(SE)
+Step 5: Calculate AIPW= mean($AIPW_1$ )-mean(AIPW_0), 1000 or more times via bootstrap and calculate the standard error (SE) by estimating the standard deviation of the bootstrapped samples. Use this SE to calculate \% confidence intervals: AIPW $\pm z\cdot sqrt{SE}$
 
 #### Supplemental Methods
 
 Sample Size Analysis:
-Evaluation of sample size was calculated by sequentially increasing (or decreasing) the sample size by one individual weighted over the entire sample as described by Rudolph et al ${ }^1$. First, we evaluated the number of similar participants needed for the ITT estimate to have an equivalent SE as the AIPW estimate. Second, we evaluated how many fewer participants would be needed for the AIPW analysis to generate an estimate with a SE similar to the main ITT analysis without any sample size changes.
+Evaluation of sample size was calculated by sequentially increasing (or decreasing) the sample size by one individual weighted over the entire sample as described by Rudolph et al$^1$. First, we evaluated the number of similar participants needed for the ITT estimate to have an equivalent SE as the AIPW estimate. Second, we evaluated how many fewer participants would be needed for the AIPW analysis to generate an estimate with a SE similar to the main ITT analysis without any sample size changes.
 
 First, we create weights that can add 1/Nth of a person to each sum or squared errors. This assures that each person's squared error gets equal weight. Effectively, each person gets upweighted a little bit.
+
 $$
-\text { weight }=w=1+\frac{i}{N_{a b c / 3 t c}}
+\text{ weight }=w=1+\frac{i}{N_{a b c / 3 t c}}
 $$
+
 Next, we calculate the standard deviation for each treatment proportion using the weights and increasing total $\mathrm{N}$ in the group as well. This is done for each treatment group. The benefit of doing it this way is that we can weight the data we have and thereby see how many more (or fewer) people we would need with this same data structure to get similar results.
 
 $$
