@@ -40,3 +40,4 @@ vignettes/*.pdf
 
 # Misc
 sas_aipw.sas
+.DS_Store
