@@ -1,9 +1,9 @@
 # actg5202_aipw_analysis
-code for Better Analysis of RCTs (publicaation pending)
+Code and Suppemental information for Better Analysis of RCTs (publicaation pending)
 
 ## Supplemental Information from Analysis
 
-#### Supplemental Table 1. Baseline characteristics of ACTG 5202 re-analysis dataset
+### Supplemental Table 1. Baseline characteristics of ACTG 5202 re-analysis dataset
 |                                   | ABC/3TC              | TDF/FTC              |
 | --------------------------------- | -------------------- | -------------------- |
 | n                                 |     398              |     399              |
@@ -30,19 +30,19 @@ code for Better Analysis of RCTs (publicaation pending)
 |      350-499                      |     37 ( 9.3)        |     40 ( 10.1)       |
 |      ≥500                         |     20 ( 5.0)        |     16 (  4.0)       |
 | Hx of Hepatitis B (%)             |                      |                      |
-| Yes                               |     34 ( 8.6)        |     28 (  7.1)       |
-| No                                |    361 (91.4)        |    365 ( 92.6)       |
+|      Yes                          |     34 ( 8.6)        |     28 (  7.1)       |
+|      No                           |    361 (91.4)        |    365 ( 92.6)       |
 | Indeterminate                     |      0 ( 0.0)        |      1 (  0.3)       |
 | Genotype (%)                      |                      |                      |
-| Recent infection, genotyped       |     53 (13.3)        |     35 (  8.8)       |
-| Not recent, genotyped             |    122 (30.7)        |    131 ( 32.8)       |
-| Not recent, Not Genotyped         |    223 (56.0)        |    233 ( 58.4)       |
+|      Recent infection, genotyped  |     53 (13.3)        |     35 (  8.8)       |
+|      Not recent, genotyped        |    122 (30.7)        |    131 ( 32.8)       |
+|      Not recent, Not Genotyped    |    223 (56.0)        |    233 ( 58.4)       |
 | History of Aids (No) (%)          |    296 (74.4)        |    312 ( 78.2)       |
 
 
 
 
-#### Supplemental Table 2
+### Supplemental Table 2
 | **Viral Suppression at 48 wks, ABC/3TC vs TDF/FTC  RD (95% CI)** | **SE** | **CID** |
 | ---------------------------------------------------------------- | ------ | ------- |
 | \-0.025 (-0.065, 0.016)                                          | 0.0205 | 0.081   |
@@ -52,7 +52,7 @@ ABC/3TC=Abacavir-Lamivudine. TDF/FTC=Tenofovir DF-Emtricitabine.  ITT=Intent-to-
 
 
 
-#### Supplemental Explanation:
+### Supplemental Explanation:
 
 $$
 A I P W=n^{-1} \sum_{i=1}^n \frac{X_i Y_i}{\pi\left(X_i ; \hat{\alpha}\right)}-\left(\frac{X_i}{\pi\left(X_i ; \hat{\alpha}\right)}-1\right) m\left(X_i ; \hat{\beta}\right)
@@ -96,7 +96,7 @@ Step 4: AIPW $=$ mean( $\left(AIPW_1\right.$ )-mean(AIPW_0$ )
 
 Step 5: Calculate AIPW= mean($AIPW_1$ )-mean(AIPW_0), 1000 or more times via bootstrap and calculate the standard error (SE) by estimating the standard deviation of the bootstrapped samples. Use this SE to calculate \% confidence intervals: AIPW $\pm z\cdot sqrt{SE}$
 
-#### Supplemental Methods
+### Supplemental Methods
 
 Sample Size Analysis:
 Evaluation of sample size was calculated by sequentially increasing (or decreasing) the sample size by one individual weighted over the entire sample as described by Rudolph et al$^1$. First, we evaluated the number of similar participants needed for the ITT estimate to have an equivalent SE as the AIPW estimate. Second, we evaluated how many fewer participants would be needed for the AIPW analysis to generate an estimate with a SE similar to the main ITT analysis without any sample size changes.
