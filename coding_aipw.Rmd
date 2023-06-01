@@ -16,43 +16,11 @@ set.seed(1234)
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
-temp<-read.csv("/Users/timf/Desktop/temp.csv")
+df<-read.csv("sim_data_actg5202_aipw.csv")
 head(df)
 ```
 
-### Make simulated data
 
-```{r, eval=FALSE}
-
-n<-695 #same size as dataset we are working with
-study_n<-695
-
-#can weight observations or use right seed.
-
-#variables that should have *similar* distributions to the ACTG5202 data
-trt<-sample(c("TDF/FTC","ABC/3TC"),size=n,replace = TRUE, prob=c(0.5,0.5))#random treatment assignment in expectation
-
-
-sex<-rbinom(n,1, prob=0.147)
-
-logrna0<-rnorm(n, 5,0.58)
-
-basecd4<-rnorm(n,186, 165.2)
-
-agegrp<-sample(c(1,2,3), size=n, replace=TRUE, prob = c(0.075, 0.761,0.164))
-
-
-
-Y0<-26.14*sex+57.75*logrna0+1.05*basecd4+(-19.72)*agegrp+rnorm(n,0,1)#use the coefficients from the linear regression in the ACTG5202 data
-
-Y1<-Y0+6.7
-
-cd4<-ifelse(trt=="TDF/FTC",Y0, Y1)
-
-df<-data.frame(cd4, trt, sex, logrna0, basecd4, agegrp)
-head(df)
-#write_csv(df, "sim_data_actg5202_aipw.csv") #output dataset for use by SAS
-```
 
 
 ### ITT analysis
@@ -63,15 +31,15 @@ summary(lm(cd4~trt, data=df))
 ```{r}
 aipw_single<-function(data){
     
- pi<-sum(data$trt=="ABC/3TC")/nrow(data)
+ pi<-sum(data$trt=="TDF/FTC")/nrow(data)
         ipw<-1/pi
         #model the outcome
-        out_model<-lm(cd4~trt+sex+agegrp+basecd4+logrna0, data=data)
-        g0<-predict(out_model, newdata=data %>% mutate(trt="TDF/FTC"))
-        g1<-predict(out_model, newdata=data %>% mutate(trt="ABC/3TC"))
+        out_model<-lm(cd4~trt*sex+trt*agegrp+trt*basecd4+trt*logrna0, data=data)
+        g0<-predict(out_model, newdata=data %>% mutate(trt="ABC/3TC"))
+        g1<-predict(out_model, newdata=data %>% mutate(trt="TDF/FTC"))
     
-        AIPW0<-(data$cd4*(data$trt=="TDF/FTC")/(1-pi))-(((data$trt=="TDF/FTC")/(1-pi))-1)*g0
-        AIPW1<-(data$cd4*(data$trt=="ABC/3TC")/pi)-(((data$trt=="ABC/3TC")/pi)-1)*g1
+        AIPW0<-(data$cd4*(data$trt=="ABC/3TC")/(1-pi))-(((data$trt=="ABC/3TC")/(1-pi))-1)*g0
+        AIPW1<-(data$cd4*(data$trt=="TDF/FTC")/pi)-(((data$trt=="TDF/FTC")/pi)-1)*g1
         
         paste0("AIPW Estimate: ",round(mean(AIPW1)-mean(AIPW0),3)  ) 
 }
@@ -92,15 +60,15 @@ mean_diffs<-vector()
      #random sample from data with size=n, and replacement (ie bootstrap sampling)
         samp<-sample_n(data, size=nrow(data), replace = TRUE) 
         #calculate robability of treatment, ABC/3TC in this sample
-        pi<-sum(samp$trt=="ABC/3TC")/nrow(samp)
+        pi<-sum(samp$trt=="TDF/FTC")/nrow(samp)
         ipw<-1/pi
         #model the outcome
-        out_model<-lm(cd4~trt+sex+agegrp+basecd4+logrna0, data=samp)
-        g0<-predict(out_model, newdata=samp %>% mutate(trt="TDF/FTC"))
-        g1<-predict(out_model, newdata=samp %>% mutate(trt="ABC/3TC"))
+        out_model<-lm(cd4~trt*sex+trt*agegrp+trt*basecd4+trt*logrna0, data=samp)
+        g0<-predict(out_model, newdata=samp %>% mutate(trt="ABC/3TC"))
+        g1<-predict(out_model, newdata=samp %>% mutate(trt="TDF/FTC"))
     
-        AIPW0<-(samp$cd4*(samp$trt=="TDF/FTC")/(1-pi))-(((samp$trt=="TDF/FTC")/(1-pi))-1)*g0
-        AIPW1<-(samp$cd4*(samp$trt=="ABC/3TC")/pi)-(((samp$trt=="ABC/3TC")/pi)-1)*g1
+        AIPW0<-(samp$cd4*(samp$trt=="ABC/3TC")/(1-pi))-(((samp$trt=="ABC/3TC")/(1-pi))-1)*g0
+        AIPW1<-(samp$cd4*(samp$trt=="TDF/FTC")/pi)-(((samp$trt=="TDF/FTC")/pi)-1)*g1
     
         mean_diffs<-append(mean_diffs, mean(AIPW1)-mean(AIPW0))
      pis<-append(pis, pi)
@@ -108,7 +76,7 @@ mean_diffs<-vector()
     data.frame(mean_diffs,pis)
 }
 
-aipw_data<-aipw_sim(df_sample, 10000)
+aipw_data<-aipw_sim(df, 3000)
 head(aipw_data)
 mean(aipw_data[,1])
 
@@ -120,18 +88,18 @@ paste0("Bootstrapped SE: ",sd(aipw_data[,1]))
 ```{r, closed form AIPW CI cd4}
 
 #calculate the probabilty of "treatment", pi
-        pi<-sum(df$trt=="ABC/3TC")/nrow(df)
+        pi<-sum(df$trt=="TDF/FTC")/nrow(df)
 
 #model the outcome
-        out_model<-lm(cd4~trt+sex+agegrp+basecd4+logrna0, data=df)
+        out_model<-lm(cd4~trt*sex+trt*agegrp+trt*basecd4+trt*logrna0, data=df)
         
 #Estimate G-formula for the "untreated" and "treated"
-        g0<-predict(out_model, newdata=df %>% mutate(trt="TDF/FTC"))
-        g1<-predict(out_model, newdata=df %>% mutate(trt="ABC/3TC"))
+        g0<-predict(out_model, newdata=df %>% mutate(trt="ABC/3TC"))
+        g1<-predict(out_model, newdata=df %>% mutate(trt="TDF/FTC"))
 
 #estimate AIPW values for each individual in both 'untreated' and 'treated'
-        AIPW0<-(df$cd4*(df$trt=="TDF/FTC")/(1-pi))-(((df$trt=="TDF/FTC")/(1-pi))-1)*g0
-        AIPW1<-(df$cd4*(df$trt=="ABC/3TC")/pi)-(((df$trt=="ABC/3TC")/pi)-1)*g1
+        AIPW0<-(df$cd4*(df$trt=="ABC/3TC")/(1-pi))-(((df$trt=="ABC/3TC")/(1-pi))-1)*g0
+        AIPW1<-(df$cd4*(df$trt=="TDF/FTC")/pi)-(((df$trt=="TDF/FTC")/pi)-1)*g1
         
 cf_aipw_ate<-mean(AIPW1)-mean(AIPW0)
 
