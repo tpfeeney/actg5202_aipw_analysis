@@ -39,5 +39,4 @@ vignettes/*.pdf
 .Renviron
 
 # Misc
-sas_aipw.sas
 .DS_Store
