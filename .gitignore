@@ -40,3 +40,5 @@ vignettes/*.pdf
 
 # Misc
 .DS_Store
+*.png
+
